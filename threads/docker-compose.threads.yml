@@ -1,0 +1,33 @@
+services:
+  api:
+    image: ghcr.io/fluxerapp/fluxer-api:v1
+    entrypoint: ["docker-entrypoint.sh"]
+    command: ["node", "dist/AppEntrypoint.js"]
+    volumes:
+      - ./threads/patch/fluxer_api/tsconfig.json:/usr/src/app/fluxer_api/tsconfig.json:ro
+      - ./threads/patch/fluxer_api/src/api/app/ControllerRegistry.ts:/usr/src/app/fluxer_api/src/api/app/ControllerRegistry.ts:ro
+      - ./threads/patch/fluxer_api/src/api/threads:/usr/src/app/fluxer_api/src/api/threads:ro
+      - ./threads/patch/fluxer_api/dist/AppEntrypoint.js:/usr/src/app/fluxer_api/dist/AppEntrypoint.js:ro
+      - ./threads/patch/fluxer_api/dist/threads.cjs:/usr/src/app/fluxer_api/dist/threads.cjs:ro
+  worker:
+    image: ghcr.io/fluxerapp/fluxer-api:v1
+    entrypoint: ["docker-entrypoint.sh"]
+    command: ["node", "dist/WorkerEntrypoint.js"]
+    volumes:
+      - ./threads/patch/fluxer_api/tsconfig.json:/usr/src/app/fluxer_api/tsconfig.json:ro
+      - ./threads/patch/fluxer_api/src/WorkerEntrypoint.ts:/usr/src/app/fluxer_api/src/WorkerEntrypoint.ts:ro
+      - ./threads/patch/fluxer_api/src/api/threads:/usr/src/app/fluxer_api/src/api/threads:ro
+      - ./threads/patch/fluxer_api/dist/WorkerEntrypoint.js:/usr/src/app/fluxer_api/dist/WorkerEntrypoint.js:ro
+      - ./threads/patch/fluxer_api/dist/threads.cjs:/usr/src/app/fluxer_api/dist/threads.cjs:ro
+  app-proxy:
+    volumes:
+      - ./threads/patch/fluxer_app/static/index.html:/srv/app/static/index.html:ro
+      - ./threads/patch/fluxer_app/static/index.html.gz:/srv/app/static/index.html.gz:ro
+      - ./threads/patch/fluxer_app/static/index.html.br:/srv/app/static/index.html.br:ro
+      - ./threads/patch/fluxer_app/static/assets/8585ec25ebdb8ec8.js:/srv/app/static/assets/8585ec25ebdb8ec8.js:ro
+      - ./threads/patch/fluxer_app/static/assets/8585ec25ebdb8ec8.js.gz:/srv/app/static/assets/8585ec25ebdb8ec8.js.gz:ro
+      - ./threads/patch/fluxer_app/static/assets/8585ec25ebdb8ec8.js.br:/srv/app/static/assets/8585ec25ebdb8ec8.js.br:ro
+  gateway:
+    volumes:
+      - ./threads/patch/fluxer_gateway/src/utils/event_atoms.erl:/opt/fluxer_gateway/lib/fluxer_gateway-0.0.0/src/utils/event_atoms.erl:ro
+      - ./threads/patch/fluxer_gateway/ebin/event_atoms.beam:/opt/fluxer_gateway/lib/fluxer_gateway-0.0.0/ebin/event_atoms.beam:ro

@@ -1,0 +1,4 @@
+services:
+  edge:
+    volumes:
+      - ./certs:/etc/caddy/certs:ro
